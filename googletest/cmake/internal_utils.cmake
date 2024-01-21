@@ -102,10 +102,16 @@ macro(config_compiler_and_linker)
     if (CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
       set(cxx_base_flags "${cxx_base_flags} -Wno-implicit-float-size-conversion -ffp-model=precise")
     endif()
-  elseif (CMAKE_COMPILER_IS_GNUCXX)
+  elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     set(cxx_base_flags "-Wall -Wshadow -Wundef")
     if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0.0)
       set(cxx_base_flags "${cxx_base_flags} -Wno-error=dangling-else")
+    endif()
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 13)
+      # Only enable this if if it can be disabled inline for "GTEST_TEST_BOOLEAN_".
+      # It accounts for this GCC bug.
+      # https://gcc.gnu.org/bugzilla/show_bug.cgi?format=multiple&id=66943
+      list(APPEND cxx_base_flags "-Wuseless-cast")
     endif()
     set(cxx_exception_flags "-fexceptions")
     set(cxx_no_exception_flags "-fno-exceptions")

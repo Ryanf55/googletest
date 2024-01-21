@@ -1486,6 +1486,12 @@ class NeverThrown {
 // Implements Boolean test assertions such as EXPECT_TRUE. expression can be
 // either a boolean expression or an AssertionResult. text is a textual
 // representation of expression as it was passed into the EXPECT_TRUE.
+// Ignore GCC 11.4 useless cast warning because it's invalid.
+// Too bad, there's a bug in GCC that this can't be ignored here.
+// https://stackoverflow.com/questions/31509434/gcc-does-not-honor-pragma-gcc-diagnostic-to-silence-warnings
+// https://stackoverflow.com/questions/9832687/strange-diagnostic-pragma-behavior-in-gcc-4-6
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #define GTEST_TEST_BOOLEAN_(expression, text, actual, expected, fail) \
   GTEST_AMBIGUOUS_ELSE_BLOCKER_                                       \
   if (const ::testing::AssertionResult gtest_ar_ =                    \
@@ -1495,7 +1501,7 @@ class NeverThrown {
     fail(::testing::internal::GetBoolAssertionFailureMessage(         \
              gtest_ar_, text, #actual, #expected)                     \
              .c_str())
-
+#pragma GCC diagnostic pop
 #define GTEST_TEST_NO_FATAL_FAILURE_(statement, fail)               \
   GTEST_AMBIGUOUS_ELSE_BLOCKER_                                     \
   if (::testing::internal::AlwaysTrue()) {                          \

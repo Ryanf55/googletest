@@ -11,7 +11,6 @@ if(NOT CYGWIN AND NOT MSYS AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL QNX)
 endif()
 
 enable_testing()
-
 include(CMakeDependentOption)
 include(GNUInstallDirs)
 

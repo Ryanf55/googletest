@@ -1124,7 +1124,11 @@ class CapturedStream {
     // The const_cast is needed below C++17. The constraints on std::string
     // implementations in C++11 and above make assumption behind the const_cast
     // fairly safe.
+    #if __cplusplus >= 201703L
+    const int captured_fd = ::mkstemp(name_template.data());
+    #else
     const int captured_fd = ::mkstemp(const_cast<char*>(name_template.data()));
+    #endif
     if (captured_fd == -1) {
       GTEST_LOG_(WARNING)
           << "Failed to create tmp file " << name_template
