@@ -41,3 +41,21 @@ jobs:
 
     - name: Tests
       run: bazel test --cxxopt=/std:c++14 --features=external_include_paths --test_output=errors ...
+
+  
+  GCC13:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install cmake
+      run: apt update && apt-get y install cmake
+    - name: Configure
+      run: cmake -S . -B build -Dgtest_build_tests=ON
+    - name: Build
+      run: cmake --build build --parallel `nproc`
+        
+
